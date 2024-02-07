@@ -1,0 +1,121 @@
+MATH 4323 PROJECT
+GROUP MEMBERS
+An Nguyen 
+Giang Huynh 
+Armando Cecilio 
+Tri Nguyen 
+Sameer Chohan 
+INTRODUCTION (Giang Huynh)
+        	Music has never been so popular thanks to the music streaming industry. With platforms like Spotify or Apple Music, music has become more and more accessible. Thousands of songs are created and added to the massive music database. Given the enormous amount of data collected, one can easily conduct research into music using the provided database. By exploring and understanding the attributes in songs that make them stand out among the sea of music tracks, one can obtain insights about current music trends and audience preferences, and eventually make predictions on the success of a music track. This is only our group goal when choosing the music data for our project. Our primary goal is to provide an answer to a question: “Can a song distinguish itself from the majority of highly streamed tracks”. To answer that question, the data set we will be using is named “Most streamed Spotify Songs 2023” dataset. The dataset contains a list of the most popular songs of 2023 in Spotify, sourced from Kaggle. The data set includes some variables that help contribute to the popularity of the song such as track names, artists name, artist count, danceability, valence, energy, et cetera. This dataset will be processed to create the binary response variable called “standout_song”, indicating whether a song has significantly higher streams than the average. This variable will be defined based on a certain threshold, such as having streams bigger than the median of the stream variable.
+METHODOLOGY (An Nguyen, Giang Huynh)
+	In this project, we are going to do supervised learning. We are going to use the K-Nearest Neighbors (KNN) model and the Support Vector Machine (SVM) model to predict if a song is a stand-out song or not. For the K-Nearest Neighbors method, it proceeds to identify the K points in the training data that are closest to X0 (this set of points is denoted N0). Then, the KNN classifier estimates that conditional probability for class j as Pr (Y = j | X = X0) = {fraction of points in N0 whose class equals j} or, in proper math notation,
+
+Finally, the KNN classifier classifies the observations to class with the highest estimated probability.
+
+It is worth mentioning that: the smaller the K is, the more flexible the method will be. We will choose the K-NN method due to its simplicity and effectiveness against small to medium data sets. Moreover, the K-NN method is intuitive and simple, with relatively high accuracy. K-NN has no assumptions since it is a non-parametric method, and there is a variety of distance criteria to be chosen from (Euclidean Distance, Hamming distance, Manhattan distance, Minkowski distance). However, KNN method do come with several disadvantages. The method is computationally expensive because the algorithm stores all the training data. The method does not produce a model, limited ability to understand how the features are related to the output. Lastly, the method is sensitive to irrelevant features and the scale of the data. 
+For the SVM model, we will perform it with several kernel functions. As provided in the lecture, the general formula for the SVM model that uses a kernel is: 
+Each kernel function comes with different equations. The equations for linear, polynomial, and radial kernel respectively are: 
+There are several advantages when we conduct SVM models with kernel functions. One distinct advantage is that it is a versatile model since we can choose different kernel functions and choose the one that fits our data set the most. SVMs with appropriate kernel functions can provide accurate prediction models, and they are known for their high classification accuracy and generalization capability. SVMs can also handle non-linear relationships between features by using a higher-dimensional input space. Nevertheless, SVMs come with some disadvantages that can affect the model’s performance on a particular data set. To bring out the best performance, we need to choose the right kernel and the proper tuning method. This is considered a very challenging task since there is no guideline for doing this task. SVMs are also very computationally expensive so it might take longer time as the data set gets bigger. Lastly, SVMs are sensitive to outliers and feature scaling. Knowing that the K-NN method and SVMs method have their own advantages and disadvantages. It is necessary to test the data set on different models because we never know which model is the best for our data set. One specific model may work best, but some other method may work better. Therefore, we will train two models and pick the one with the best performance.
+	In both methods, we will also do k-fold cross validation (k=10) for validating and measuring the output of the model, in order to find the best model achieved.
+
+DATA ANALYSIS
+PART A: (Armando Cecillio, Sameer Chohan)
+First, we included all necessary libraries such as class and caret. Since this is a supervised learning task, we will need a binary response variable to conduct our predictions. We created a variable called “standout_song” based on the median value of the “streams” variable. If the “streams” variable of a song is bigger than the median value, then the song would be a stand_out song (1), and vice versa (0).
+  
+Then the Spotify data was read from the csv file. We proceeded to clean our data set by dropping any columns that have missing values. We also noticed that there are some variables that are not in their correct data type. Therefore, our data cleaning process includes dropping invalid columns and fixing data types of some columns. 
+ 
+We decided to exclude columns with non-numeric data before we fit the K-NN model on the data set. We took these steps because they helped us in ensuring the quality of the data before the next crucial step. Next, we proceed to make a correlation matrix to evaluate the relationship between all numeric variables and streams to see which variables we should include in our K-NN model and which one not.
+
+	 
+
+From the correlation matrix above, we can state that there is a strong correlation between “streams” variable and “in_spotify_playlists”, “in_deezer_playlists”, and “in_apple_playlists”. We can also see that there is negative correlation between the “released_year” and the “streams” variable, indicating an inverse proportional relationship. We decided to keep these variables for fitting our model. Then, we exclude the “in_spotify_charts”, “in_apple_charts”, “in_deezer_charts”, and “in_shazam_charts” variables, even though they have a somewhat strong relationship to our “stream” variable. Including them in our models might lead to overfitting since these are variables that are affected to the related to charts, which directly affective to “streams variable.
+We decided to scale our data since scaling is essential in K-NN because different numeric features may have different scales or units, which can affect the performance of some machine learning algorithms (e.g., k-nearest neighbors or support vector machines). Scaling standardizes the data to have a mean of 0 and a standard deviation of 1. In this article mentions the importance of scaling data which also applies to our dataset here, “Scaling the data can help to balance the impact of all variables on the distance calculation and can help to improve the performance of the algorithm. In particular, several ML techniques, such as neural networks…” (Khoong, W. H., P.2).
+PART B:
+KNN MODEL (Tri Nguyen, Giang Huynh)
+	For the K-NN method, we used ten-fold cross validation to decide the best K value for our K-NN models. Before fitting the model, we splitted the data set into 80% training data and 20% testing data.
+ 
+We decided to create two K-NN models, one dealing with raw data, and one dealing with scaled data. For the K-NN model that deals with raw data, we first picked the best k value obtained by the cross-validation method, and then train it:
+This is our prediction error on the test set for this K-NN model:
+ 
+For the K-NN model that deals with scaled data, we first went through the scaling process for the train set and test set with the codes below:
+	
+We then proceed to train the model, and the best prediction error we obtained is:
+ 
+SVM MODEL (An Nguyen, Armando Cecilio)
+For the SVM model, we first divided the data set into two subsets: training set (80%) and testing set (20%). We used set.seed(4323) and sample.kind = “Rounding” for stabilization.
+ 
+Then we tested the data set with four different types of SVM models: linear, sigmoid, radial, and polynomial. Each model was done using 10-fold cross validation with different range values, which was to find the best version in each model. After training all the models, the two best models among the four are: Linear and Polynomial. In the Linear model, the best model has Cost = 100, reaching a testing error rate of 15.26%. In the Polynomial model, the best model has Cost = 5, Degree = 3, reaching a testing error rate of 20.53%.
+
+(Linear model code in R studio)
+ 
+
+(Polynomial model code in R studio)
+ 
+
+=> In comparison, the Linear SVM model is the most fit model for this data set. We will use this model to compare with the KNN model to find the best fit for this data set.
+
+PART C (An Nguyen):
+	The best prediction test error of the KNN model is 19.51%, while the best prediction test error of the Linear SVM model is 15.26%. In conclusion, the Linear SVM model is more efficient for this dataset, and we will use it for other next parts.
+
+PART D (An Nguyen, Tri Nguyen, Giang Huynh):
+	In this part, we will fit the Linear SVM model in the full data set. We also choose only three variables: “standout_song”, “in_sportify_playlists”, “in_apple_playlists”. These are the three variables that have a high correlation we have found in the previous part. We chose it, hoping for the possibility of decreasing in error rate. This will help create a better version of the model.
+ 
+ 
+ 
+	The prediction test error rate from this model is 14.81%, slightly decreased compared to the first Linear SVM model (15.26%). This improvement illustrates that the two variables are more fit to predict “standout_song” than other variables. False negative rate is quite high (20.58%), and False positive rate is low (9%). This illustrates how difficult it is in predicting if a song is famous or not, based only on a few variables. However, we believed the model did very well. It is more important to avoid falsely assuming infamous songs as famous. In this data set, reducing false positive errors is more important than reducing false negative errors.
+
+ 
+	In this graph, the x-axis and y-axis represent the two variables: in_apple_playlists and in_spotify_playlists, from our data set that was used for the Linear SVM model. The yellow background indicates a song that is standout (1), and the white part indicates song that is not standout (0). In this graph, the error most occurred in [-1,1] of in_apple_playlists, in [-0.5, 0.5] of in_spotify_playlists, near the decision boundary. There were 141 errors in this plot.
+	We also tried to fit the best KNN model to the full data set to see how they perform:
+It appeared that the SVM linear model still performs better on the full data set. However, there are some plots that we achieved using KNN that might contribute to our overall questions for this project.
+	 
+
+PART E (An Nguyen, Armando Cecilio):
+	The model did very well in predicting standout songs based only on two variables: in_apple_playlists and in_spotify_playlists. Its prediction test error is low (14.81%), and its false positive rate is low (9%). The performance of this model significantly affects how we predict standout songs, as we have created a great and powerful model. In conclusion, there is a high likelihood of successfully predicting standout songs using this model based on the provided dataset.
+CONCLUSION (Armando Cecillio, Sameer Chohan)
+	We can absolutely use our model to predict whether a song can be a stand-out song among top songs. There are some variables that are difficult to depend on for classification, like the characteristics of the song such as energy, speechiness, valance, danceability. From the KNN graph of speechiness and danceability, there is no clear boundary between a stand-out song and the opposite. We must include other factors such as the number of times the song is added to the playlists. We believe it is also due to how we create the response variable. We created based on the “streams” variable, so the more playlists are the songs in the more users listen to those songs, therefore increasing the song’s number of streams. To sum up, for this project, we can predict whether a song is a stand-out song or not based on some strong factors such as number of times they are in different playlists or some small factors such as their release_year, characteristics in a song.
+	To improve the performance of our model, we can possibly choose another scaling system that fits our data set better. We can also improve our tuning process to have better hyperparameters before fitting our model. Moreover, another approach in creating our response variable can potentially improve the accuracy and effectiveness of the model and can help the model bring out more complex patterns in the data set.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+REFERENCES(Armando Cecilio)
+Khoong, W. H. (2023, January 21). Why scaling your data is important - CodeX - Medium. Medium. https://medium.com/codex/why-scaling-your-data-is-important.
+
+APPENDIX
+
+	Some of the SVM  models that did not create a high accuracy rate (Radial and Sigmoid).
+
+ 
+ 
+
+
